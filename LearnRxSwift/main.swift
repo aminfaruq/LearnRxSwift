@@ -52,3 +52,16 @@ example(of: "empty") {
         }
     )
 }
+
+example(of: "never") {
+    let observable = Observable<Void>.never()
+    
+    observable.subscribe(
+        onNext: { element in
+            print(element)
+        },
+        onCompleted: {
+            print("Completed")
+        }
+    )
+}
