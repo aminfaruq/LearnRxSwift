@@ -205,51 +205,68 @@ example(of: "deferred") {
 }
 
 example(of: "Single") {
-    // 1. Create a dispose bag to use later.
+    // 1. A dispose bag for good memory management.
     let disposeBag = DisposeBag()
     
-    // 2. Define an `Error` enum to model some possible errors that can occur in reading data from a file on disk.
+    // 2. An error enum to describe what could go wrong.
     enum FileReadError: Error {
         case fileNotFound, unreadable, encodingFailed
     }
     
-    // 3. Implement a function to load text from a file on disk that returns a Single.
+    // 3. An updated function to load text directly from a file path.
     func loadText(from name: String) -> Single<String> {
-        //4. Create and return a Single.
         return Single.create { single in
-            // Create a Disposable , because the subscribe closure of create expects it as its return type.
-            let disposable = Disposables.create()
+            // --- The New Logic Starts Here ---
             
-            // Get the path for the filename, or else add a file not found error onto the Single and return the disposable you created.
-            guard let path = Bundle.main.path(forResource: name, ofType: "txt") else {
+            // a. Get the full path to the current source file (main.swift).
+            let currentFile = #file
+            
+            // b. Create a URL from that path.
+            let currentFileURL = URL(fileURLWithPath: currentFile)
+            
+            // c. Get the path to the DIRECTORY containing main.swift.
+            let directoryURL = currentFileURL.deletingLastPathComponent()
+            
+            // d. Append the filename we want to read (e.g., "Copyright") to the directory path.
+            //    This creates the full, correct path to your text file.
+            let fileURL = directoryURL.appendingPathComponent(name)
+            
+            // --- The Rest of the Logic Uses the New Path ---
+            
+            // --- DEBUGGING STEP ---
+            // Print the exact path we are trying to access.
+            print("--------------------------------------------------")
+            print("DEBUG: Attempting to read from this path:")
+            print(fileURL.path)
+            print("--------------------------------------------------")
+            
+            // e. Try to get the file's data using FileManager and the direct path.
+            guard let data = FileManager.default.contents(atPath: fileURL.path) else {
+                // If this fails, the file doesn't exist at that path.
                 single(.failure(FileReadError.fileNotFound))
-                return disposable
+                return Disposables.create()
             }
             
-            // Get the data from the file at that path, or add an unreadable error onto the Single and return the disposable.
-            guard let data = FileManager.default.contents(atPath: path) else {
-                single(.failure(FileReadError.unreadable))
-                return disposable
-            }
-          
-            // Convert the data to a string; otherwise, add an encoding failed error onto the Singleand return the disposable. Starting to see a pattern here?
+            // f. Try to convert the data into a String.
             guard let contents = String(data: data, encoding: .utf8) else {
                 single(.failure(FileReadError.encodingFailed))
-                return disposable
+                return Disposables.create()
             }
             
-            // Made it this far? Add the contents onto the Single as a success, and return the disposable.
+            // g. If everything worked, emit the file's contents as a success.
             single(.success(contents))
-            return disposable
+            return Disposables.create()
         }
     }
-    // Call loadText(from:) and pass the root name of the text file.
-    loadText(from: "Copyright")
-    // Subscribe to the Single it returns.
+    
+    // Now, call the function. It should find the "Copyright" file
+    // as long as it's in the same folder as your main.swift file.
+    loadText(from: "Copyright.txt")
         .subscribe {
-            // Switch on the event and print the string if it was successful, or print the error if not.
             switch $0 {
             case .success(let string):
+                // You should see the content of your Copyright file here!
+                print("\n--- File Found! ---")
                 print(string)
             case .failure(let error):
                 print(error)
