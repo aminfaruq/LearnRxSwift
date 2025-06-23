@@ -35,7 +35,7 @@ example(of: "subscribe") {
     
     observable.subscribe(onNext: { element in
         print(element)
-    })
+    }).dispose()
 }
 
 example(of: "empty") {
@@ -50,7 +50,7 @@ example(of: "empty") {
         onCompleted: {
             print("Completed")
         }
-    )
+    ).dispose()
 }
 
 example(of: "never") {
@@ -63,7 +63,7 @@ example(of: "never") {
         onCompleted: {
             print("Completed")
         }
-    )
+    ).dispose()
 }
 
 example(of: "range") {
@@ -83,7 +83,7 @@ example(of: "range") {
                 
                 print(fibonacci)
             }
-        )
+        ).dispose()
 }
 
 example(of: "dispose") {
@@ -109,4 +109,37 @@ example(of: "DisposeBag") {
             print($0)
         }
         .disposed(by: disposeBag) // 4
+}
+
+
+
+example(of: "create") {
+    enum MyError: Error {
+        case anError
+    }
+    
+    let disposeBag = DisposeBag()
+    
+    Observable<String>.create { observer in
+        // 1
+        observer.onNext("1")
+        
+        observer.onError(MyError.anError)
+        
+        // 2
+        observer.onCompleted()
+        
+        // 3
+        observer.onNext("?") //BARIS INI TIDAK AKAN PERNAH DIJALANKAN
+        
+        // 4
+        return Disposables.create()
+    }
+    .subscribe(
+        onNext: { print($0) },
+        onError: { print($0) },
+        onCompleted: { print("Completed") },
+        onDisposed: { print("Disposed") }
+    )
+    .disposed(by: disposeBag)
 }
