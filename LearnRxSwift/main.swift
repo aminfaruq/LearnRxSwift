@@ -203,3 +203,57 @@ example(of: "deferred") {
         print()
     }
 }
+
+example(of: "Single") {
+    // 1. Create a dispose bag to use later.
+    let disposeBag = DisposeBag()
+    
+    // 2. Define an `Error` enum to model some possible errors that can occur in reading data from a file on disk.
+    enum FileReadError: Error {
+        case fileNotFound, unreadable, encodingFailed
+    }
+    
+    // 3. Implement a function to load text from a file on disk that returns a Single.
+    func loadText(from name: String) -> Single<String> {
+        //4. Create and return a Single.
+        return Single.create { single in
+            // Create a Disposable , because the subscribe closure of create expects it as its return type.
+            let disposable = Disposables.create()
+            
+            // Get the path for the filename, or else add a file not found error onto the Single and return the disposable you created.
+            guard let path = Bundle.main.path(forResource: name, ofType: "txt") else {
+                single(.failure(FileReadError.fileNotFound))
+                return disposable
+            }
+            
+            // Get the data from the file at that path, or add an unreadable error onto the Single and return the disposable.
+            guard let data = FileManager.default.contents(atPath: path) else {
+                single(.failure(FileReadError.unreadable))
+                return disposable
+            }
+          
+            // Convert the data to a string; otherwise, add an encoding failed error onto the Singleand return the disposable. Starting to see a pattern here?
+            guard let contents = String(data: data, encoding: .utf8) else {
+                single(.failure(FileReadError.encodingFailed))
+                return disposable
+            }
+            
+            // Made it this far? Add the contents onto the Single as a success, and return the disposable.
+            single(.success(contents))
+            return disposable
+        }
+    }
+    // Call loadText(from:) and pass the root name of the text file.
+    loadText(from: "Copyright")
+    // Subscribe to the Single it returns.
+        .subscribe {
+            // Switch on the event and print the string if it was successful, or print the error if not.
+            switch $0 {
+            case .success(let string):
+                print(string)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        .disposed(by: disposeBag)
+}
