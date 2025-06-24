@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import RxRelay
 
 // Define an error type to use in upcoming examples.
 enum MyError: Error {
@@ -114,5 +115,21 @@ struct SubjectsCommand: Runnable {
             .disposed(by: disposeBag)
         }
         
+        example(of: "PublishRelay") {
+            let relay = PublishRelay<String>()
+            
+            let disposeBag = DisposeBag()
+            
+            relay.accept("Knock knock, anyone home?")
+            
+            relay.subscribe(
+                onNext: {
+                    print($0)
+                }
+            )
+            .disposed(by: disposeBag)
+            
+            relay.accept("1")
+        }
     }
 }

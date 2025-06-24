@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8326FBE12E09306E00DA88C5 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8326FBE02E09306E00DA88C5 /* RxSwift */; };
+		838B5B712E0A63B3005BCD79 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 838B5B702E0A63B3005BCD79 /* RxRelay */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				838B5B712E0A63B3005BCD79 /* RxRelay in Frameworks */,
 				8326FBE12E09306E00DA88C5 /* RxSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -50,6 +52,7 @@
 			isa = PBXGroup;
 			children = (
 				8326FBD72E092F6900DA88C5 /* LearnRxSwift */,
+				838B5B6F2E0A63B3005BCD79 /* Frameworks */,
 				8326FBD62E092F6900DA88C5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,6 +63,13 @@
 				8326FBD52E092F6900DA88C5 /* LearnRxSwift */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		838B5B6F2E0A63B3005BCD79 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +93,7 @@
 			name = LearnRxSwift;
 			packageProductDependencies = (
 				8326FBE02E09306E00DA88C5 /* RxSwift */,
+				838B5B702E0A63B3005BCD79 /* RxRelay */,
 			);
 			productName = LearnRxSwift;
 			productReference = 8326FBD52E092F6900DA88C5 /* LearnRxSwift */;
@@ -315,6 +326,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8326FBDF2E09306E00DA88C5 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
+		};
+		838B5B702E0A63B3005BCD79 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8326FBDF2E09306E00DA88C5 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
