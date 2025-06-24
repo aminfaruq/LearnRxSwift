@@ -131,5 +131,32 @@ struct SubjectsCommand: Runnable {
             
             relay.accept("1")
         }
+        
+        example(of: "BehaviourRelay") {
+            // You create a behavior relay with an initial value. The relay’s type is inferred, but you could also explicitly declare the type as `BehaviorRelay<String>(value: "Initial value")`.
+            let relay = BehaviorRelay(value: "Initial value")
+            let disposeBag = DisposeBag()
+            
+            // Add a new element onto the relay.
+            relay.accept("New initial value")
+            
+            // Subscribe to the relay.
+            relay.subscribe {
+                print(label: "1)", event: $0)
+            }.disposed(by: disposeBag)
+            
+            // Add a new element onto the relay.
+            relay.accept("1")
+            
+            // Create a new subscription to the relay.
+            relay.subscribe {
+                print(label: "2)", event: $0)
+            }.disposed(by: disposeBag)
+            
+            // Add another new element onto the relay.
+            relay.accept("2")
+            
+            print(relay.value)
+        }
     }
 }
