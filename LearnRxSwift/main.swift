@@ -9,7 +9,7 @@ import Foundation
 
 // An array of all the commands your tool can run.
 let commands: [Runnable] = [
-    ObservablesCommand(),
+//    ObservablesCommand(),
     SubjectsCommand()
 ]
 
