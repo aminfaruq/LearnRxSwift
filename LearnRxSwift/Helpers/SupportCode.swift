@@ -12,3 +12,7 @@ public func example(of description: String,
     print("\n--- Example of:", description, "---")
     action()
 }
+
+protocol Runnable {
+    func run() throws
+}
