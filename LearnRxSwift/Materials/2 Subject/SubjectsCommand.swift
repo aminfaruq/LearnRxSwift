@@ -13,12 +13,6 @@ enum MyError: Error {
     case anError
 }
 
-// Expanding upon the use of the ternary operator in the previous example, you create a helper function to print the element if there is one, an error if there is one, or else the event itself. How convenient!
-func print<T: CustomStringConvertible>(label: String, event: Event<T>) {
-    print(_: label, _: (event.element ?? event.error) ?? event)
-}
-
-
 struct SubjectsCommand: Runnable {
     func run() throws {
         example(of: "PublishSubject") {
@@ -87,6 +81,37 @@ struct SubjectsCommand: Runnable {
                     print(label: "2)", event: $0)
                 }
                 .disposed(by: disposeBag)
+        }
+        
+        example(of: "ReplaySubject") {
+            // Create a new replay subject with a buffer size of 2 . Replay subjects are initialized using the type method create(bufferSize:).
+            let subject = ReplaySubject<String>.create(bufferSize: 2)
+            let disposeBag = DisposeBag()
+            
+            // Add three elements onto the subject.
+            subject.onNext("1")
+            subject.onNext("2")
+            subject.onNext("3")
+            
+            // Create two subscriptions to the subject.
+            subject.subscribe {
+                print(label: "1)", event: $0)
+            }
+            .disposed(by: disposeBag)
+            
+            subject.subscribe {
+                print(label: "2)", event: $0)
+            }
+            .disposed(by: disposeBag)
+            
+            subject.onNext("4")
+            subject.onError(MyError.anError)
+            subject.dispose()
+            
+            subject.subscribe {
+                print(label: "3)", event: $0)
+            }
+            .disposed(by: disposeBag)
         }
         
     }
