@@ -29,5 +29,25 @@ struct FilteringCommand: Runnable {
             
             strikes.onCompleted()
         }
+        
+        example(of: "elementAt") {
+            // You create a subject.
+            let strikes = PublishSubject<String>()
+            
+            let disposeBag = DisposeBag()
+            
+            // You subscribe to the next events, ignoring all but the 3rd next event, found at index 2 .
+            strikes
+                .element(at: 2)
+                .subscribe(onNext: { _ in
+                    print("You're out!")
+                })
+                .disposed(by: disposeBag)
+            
+            strikes.onNext("X")
+            strikes.onNext("X")
+            strikes.onNext("X")
+
+        }
     }
 }
