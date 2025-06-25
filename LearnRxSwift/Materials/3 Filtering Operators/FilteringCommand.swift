@@ -47,7 +47,20 @@ struct FilteringCommand: Runnable {
             strikes.onNext("X")
             strikes.onNext("X")
             strikes.onNext("X")
-
+        }
+        
+        example(of: "filter") {
+            let disposeBag = DisposeBag()
+            
+            // 1
+            Observable.of(1,2,3,4,5,6)
+            // 2
+                .filter({ $0.isMultiple(of: 2) })
+            // 3
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
         }
     }
 }
