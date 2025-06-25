@@ -52,11 +52,11 @@ struct FilteringCommand: Runnable {
         example(of: "filter") {
             let disposeBag = DisposeBag()
             
-            // 1
+            // create an observable of some predefined integers.
             Observable.of(1,2,3,4,5,6)
-            // 2
+            // use the filter operator to apply a conditional constraint to prevent odd numbers from getting through.
                 .filter({ $0.isMultiple(of: 2) })
-            // 3
+            // subscribe and print out the elements that pass the filter predicate.
                 .subscribe(onNext: {
                     print($0)
                 })
@@ -87,6 +87,32 @@ struct FilteringCommand: Runnable {
                     print($0)
                 })
                 .disposed(by: diposeBag)
+        }
+        
+        example(of: "skipUntil") {
+            let disposeBag = DisposeBag()
+            
+            // Create a subject to model the data you want to work with, and another subject to act as a trigger
+            let subject = PublishSubject<String>()
+            let trigger = PublishSubject<String>()
+            
+            // Use skipUntil and pass the trigger subject. When trigger emits, skipUntil stops skipping.
+            subject
+                .skip(until: trigger)
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
+            
+            // Add a couple of next events onto subject
+            subject.onNext("A")
+            subject.onNext("B")
+            
+            // Nothing is printed, because you’re skipping. Now add a new next event onto trigger
+            trigger.onNext("X")
+            
+            // This causes skipUntil to stop skipping. From this point onward, all elements are let through. Add another next event onto subject
+            subject.onNext("C")
         }
     }
 }
