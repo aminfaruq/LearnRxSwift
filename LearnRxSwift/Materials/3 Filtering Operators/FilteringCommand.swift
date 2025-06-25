@@ -75,5 +75,18 @@ struct FilteringCommand: Runnable {
                 })
                 .disposed(by: disposeBag)
         }
+        
+        example(of: "skipWhile") {
+            let diposeBag = DisposeBag()
+            
+            // Create an observable of integers.
+            Observable.of(2,2,3,4,4)
+            // Use skipWhile with a predicate that skips elements until an odd integer is emitted.
+                .skip(while: { $0.isMultiple(of: 2) })
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: diposeBag)
+        }
     }
 }
