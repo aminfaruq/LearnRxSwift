@@ -108,8 +108,23 @@ class MainViewController: UIViewController {
   }
   
   func showMessage(_ title: String, description: String? = nil) {
-    let alert = UIAlertController(title: title, message: description, preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: "Close", style: .default, handler: { [weak self] _ in self?.dismiss(animated: true, completion: nil)}))
-    present(alert, animated: true, completion: nil)
+    showAlert(title, description: description)
+      .subscribe()
+      .disposed(by: bag)
+  }
+  
+  func showAlert(_ title: String, description: String? = nil) -> Observable<Void> {
+    return Observable.create { [weak self] observer in
+      let alert = UIAlertController(title: title, message: description, preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: "Close", style: .destructive, handler: { _ in
+        observer.onNext(())
+        observer.onCompleted()
+      }))
+      
+      self?.present(alert, animated: true, completion: nil)
+      return Disposables.create {
+        self?.dismiss(animated: true, completion: nil)
+      }
+    }
   }
 }
