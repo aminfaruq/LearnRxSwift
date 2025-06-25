@@ -165,5 +165,30 @@ struct OperatorsCommand: Runnable {
                 })
                 .disposed(by: disposeBag)
         }
+        
+        example(of: "takeUntil trigger") {
+            let disposeBag = DisposeBag()
+            
+            // Create a primary subject and a trigger subject.
+            let subject = PublishSubject<String>()
+            let trigger = PublishSubject<String>()
+            
+            // Use takeUntil, passing the trigger that will cause takeUntil to stop taking once it emits.
+            subject
+                .take(until: trigger)
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
+            
+            // Add a couple of elements onto subject.
+            subject.onNext("1")
+            subject.onNext("2")
+            
+            // Now add an element onto trigger , followed by another element onto subject
+            trigger.onNext("X")
+            
+            subject.onNext("3")
+        }
     }
 }
