@@ -62,5 +62,18 @@ struct FilteringCommand: Runnable {
                 })
                 .disposed(by: disposeBag)
         }
+        
+        example(of: "skip") {
+            let disposeBag = DisposeBag()
+            
+            // Create an observable of letters.
+            Observable.of("A", "B", "C", "D", "E", "F")
+            // Use skip to skip the first 3 elements and subscribe to next events.
+                .skip(3)
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
+        }
     }
 }
