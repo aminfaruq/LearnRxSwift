@@ -2,3 +2,29 @@
 *.xcuserstate
 
 LearnRxSwift.xcodeproj/project.xcworkspace/xcuserdata/aminfaruq.xcuserdatad/
+
+*.lock
+
+Example App/Pods/RxSwift/RxSwift/Observables/
+
+Example App/Pods/RxSwift/RxSwift/Schedulers/
+
+Example App/Pods/RxSwift/RxSwift/
+
+Example App/Pods/Target Support Files/RxSwift/
+
+Example App/Pods/Target Support Files/RxRelay/
+
+Example App/Pods/Target Support Files/Pods-Combinestagram/
+
+Example App/Pods/RxSwift/Platform/
+
+Example App/Pods/RxRelay/RxRelay/
+
+Example App/Pods/RxSwift/
+
+Example App/Pods/RxRelay/
+
+Example App/Pods/Pods.xcodeproj/xcuserdata/aminfaruq.xcuserdatad/xcschemes/
+
+Example App/Pods/Pods.xcodeproj/
