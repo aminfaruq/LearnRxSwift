@@ -151,5 +151,19 @@ struct OperatorsCommand: Runnable {
                 })
                 .disposed(by: disposeBag)
         }
+        
+        example(of: "takeUntil") {
+            let disposeBag = DisposeBag()
+            
+            // Create an Observable of sequential integers.
+            Observable.of(1,2,3,4,5)
+            // Use the takeUntil operator with inclusive behavior.
+                .take(until: { $0.isMultiple(of: 4) }, behavior: .inclusive)
+                // .take(until: { $0.isMultiple(of: 4) }, behavior: .exclusive)
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
+        }
     }
 }
