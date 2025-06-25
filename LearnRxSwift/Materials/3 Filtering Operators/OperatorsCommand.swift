@@ -130,5 +130,26 @@ struct OperatorsCommand: Runnable {
                 })
                 .disposed(by: disposeBag)
         }
+        
+        example(of: "takeWhile") {
+            let disposeBag = DisposeBag()
+            
+            // Create an observable of integers.
+            Observable.of(2, 2, 4, 4, 6, 6)
+            // Use the enumerated operator to get tuples containing the index and value of each element emitted.
+                .enumerated()
+            // Use the takeWhile operator, and destructure the tuple into individual arguments.
+                .take(while: { index, integer in
+                    // Pass a predicate that will take elements until the condition fails.
+                    integer.isMultiple(of: 2) && index < 3
+                })
+            // Use map — which works just like the Swift Standard Library map — to reach into the tuple returned from takeWhile and get the element.
+                .map(\.element)
+            // Subscribe to and print out next elements.
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
+        }
     }
 }
