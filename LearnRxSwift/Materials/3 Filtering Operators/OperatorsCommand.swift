@@ -6,6 +6,7 @@
 //
 import RxSwift
 import RxRelay
+import Foundation
 
 struct OperatorsCommand: Runnable {
     func run() throws {
@@ -189,6 +190,61 @@ struct OperatorsCommand: Runnable {
             trigger.onNext("X")
             
             subject.onNext("3")
+        }
+        
+        // MARK: - Distinct Operators
+        
+        example(of: "distinctUntilChanged") {
+            let disposeBag = DisposeBag()
+            
+            // Create an observable of letters.
+            Observable.of("A", "A", "B", "B", "A")
+            // Use `distinctUntilChanged` to prevent sequential duplicates from getting through.
+                .distinctUntilChanged()
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
+        }
+        
+        example(of: "distinctUntilChanged(_:)") {
+            let disposeBag = DisposeBag()
+            
+            // Create a number formatter to spell out each number.
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .spellOut
+            
+            // Create an observable of NSNumber s instead of Int s, so that you don’t have to convert integers when using the formatter next.
+            Observable<NSNumber>.of(10, 110, 20, 200, 210, 310)
+            // Use distinctUntilChanged(_:) , which takes a predicate closure that receives each sequential pair of elements.
+                .distinctUntilChanged { a, b in
+                    // Use guard to conditionally bind the element’s components separated by an empty space, or else return false.
+                    guard let aWords = formatter
+                        .string(from: a)?
+                        .components(separatedBy: " "),
+                          let bWords = formatter
+                        .string(from: b)?
+                        .components(separatedBy: " ")
+                    else {
+                        return false
+                    }
+                    
+                    var containsMatch = false
+                    
+                    // Iterate every word in the first array and see if its contained in the second array.
+                    for aWord in aWords where bWords.contains(aWord) {
+                        containsMatch = true
+                        break
+                    }
+                    
+                    return containsMatch
+                }
+            // Subscribe and print out elements that are considered distinct based on the comparing logic you provided.
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
+            
         }
     }
 }
