@@ -1,5 +1,5 @@
 //
-//  FilteringOperatorsCommand.swift
+//  OperatorsCommand.swift
 //  LearnRxSwift
 //
 //  Created by Amin faruq on 26/06/25.
@@ -7,8 +7,9 @@
 import RxSwift
 import RxRelay
 
-struct FilteringCommand: Runnable {
+struct OperatorsCommand: Runnable {
     func run() throws {
+        // MARK: - Filtering Operators
         example(of: "ignore") {
             // Create a strikes subject.
             let strikes = PublishSubject<String>()
@@ -113,6 +114,21 @@ struct FilteringCommand: Runnable {
             
             // This causes skipUntil to stop skipping. From this point onward, all elements are let through. Add another next event onto subject
             subject.onNext("C")
+        }
+        
+        // MARK: - Taking Operators
+        
+        example(of: "take") {
+            let disposeBag = DisposeBag()
+            
+            // Create an observable of integers.
+            Observable.of(1,2,3,4,5,6)
+            // Take the first 3 elements using take.
+                .take(3)
+                .subscribe(onNext: {
+                    print($0)
+                })
+                .disposed(by: disposeBag)
         }
     }
 }
