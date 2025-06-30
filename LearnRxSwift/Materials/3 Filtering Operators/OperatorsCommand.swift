@@ -246,5 +246,35 @@ struct OperatorsCommand: Runnable {
                 .disposed(by: disposeBag)
             
         }
+        
+        example(of: "Sample Not best Practice") {
+            let disposeBag = DisposeBag()
+
+            var start = 0
+            func getStartNumber() -> Int {
+                start += 1
+                return start
+            }
+            
+            let numbers = Observable<Int>.create { observer in
+                let start = getStartNumber()
+                observer.onNext(start)
+                observer.onNext(start+1)
+                observer.onNext(start+2)
+                observer.onCompleted()
+                return Disposables.create {}
+            }
+            
+            numbers
+                .subscribe(
+                    onNext: { el in
+                        print("element [\(el)]")
+                    },
+                    onCompleted: {
+                        print("----------")
+                    }
+                )
+                .disposed(by: disposeBag)
+        }
     }
 }
