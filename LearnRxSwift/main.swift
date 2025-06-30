@@ -9,10 +9,13 @@ import Foundation
 
 // An array of all the commands your tool can run.
 let commands: [Runnable] = [
-    ObservablesCommand(),
-    ObservableChallenges(),
-    SubjectsCommand(),
-    SubjectsChallenges()
+//    ObservablesCommand(),
+//    ObservableChallenges(),
+//    SubjectsCommand(),
+//    SubjectsChallenges(),
+//    OperatorsCommand(),
+//    OperatorsChallenges(),
+    TransformingCommand()
 ]
 
 // A simple function to run all registered commands.
