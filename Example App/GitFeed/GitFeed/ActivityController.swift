@@ -85,13 +85,47 @@ class ActivityController: UITableViewController {
   }
 
   func fetchEvents(repo: String) {
-    let response = Observable.from([repo])
+    /* Existing Code
+     let response = Observable.from([repo])
       .map { urlString -> URL in
         return URL(string: "https://api.github.com/repos/\(urlString)/events")!
       }
     //      .map { url -> URLRequest in
     //        return URLRequest(url: url)
     //      }
+      .map({ [weak self] url -> URLRequest in
+        var request = URLRequest(url: url)
+        if let modifiedHeader = self?.lastModified.value {
+          request.addValue(modifiedHeader, forHTTPHeaderField: "Last-Modified")
+        }
+        return request
+      })
+      .flatMap { request -> Observable<(response: HTTPURLResponse, data: Data)> in
+        return URLSession.shared.rx.response(request: request)
+      }
+      .share(replay: 1)*/
+    
+    // Challenges
+    //1-3: create for take list repo name
+    let response = Observable.from(["https://api.github.com/search/repositories?q=language:swift&per_page=5"])
+    //.map({ URL(string: $0)! })
+    //.map({ URLRequest(url: $0) })
+      .map({ URLRequest(url: URL(string: $0)!) })
+      .flatMap({ request -> Observable<Any> in
+        return URLSession.shared.rx.json(request: request)
+      })
+      .flatMap { json -> Observable<String> in
+        guard let mainDict = json as? [String: Any],
+              let items = mainDict["items"] as? [[String: Any]] else {
+          return Observable.empty()
+        }
+        let fullNames = items.compactMap({ $0["full_name"] as? String })
+        return Observable.from(fullNames)
+      }
+    //4: Connectiong with rest of code
+      .map ({ urlString -> URL in
+        return URL(string: "https://api.github.com/repos/\(urlString)/events?per_page=5")!
+      })
       .map({ [weak self] url -> URLRequest in
         var request = URLRequest(url: url)
         if let modifiedHeader = self?.lastModified.value {
