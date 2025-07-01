@@ -15,7 +15,8 @@ let commands: [Runnable] = [
 //    SubjectsChallenges(),
 //    OperatorsCommand(),
 //    OperatorsChallenges(),
-    TransformingCommand()
+//    TransformingCommand(),
+    TransformingChallenges(),
 ]
 
 // A simple function to run all registered commands.
